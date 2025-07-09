@@ -13,6 +13,9 @@ return [
     | This will allow your users to receive real-time notifications.
     |
     */
+    'panels' => [
+        App\Providers\Filament\AdminPanelProvider::class,
+    ],
 
     'broadcasting' => [
 

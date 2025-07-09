@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +34,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+            Auth::logout();
+            return redirect()->away(route('admin.login'))->withErrors(['email' => 'Veuillez utiliser la page de connexion admin.']);
+            // on bloque la connexion via ce contrôleur car un admin doit passer par /admin/login (login Filament)
+        } elseif ($user->hasRole('formateur')) {
+            return redirect()->route('formateur.dashboard');
+        } elseif ($user->hasRole('etudiant')) {
+            return redirect()->route('etudiant.dashboard');
+        } else {
+            // Si pas de rôle ou rôle inconnu)
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['email' => 'Votre compte ne peut pas se connecter ici.']);
+        }
+
     }
 
     /**

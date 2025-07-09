@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -16,6 +17,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -23,8 +25,8 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin')
-            ->path('admin')
+            ->id('admin')  // id de panel
+            ->path('admin') 
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -51,6 +53,21 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->authGuard('web'); // si tu utilises le guard web
     }
+
+    //  exécuté quand Filament démarre, pour vérifier le rôle.
+    // Seuls les utilisateurs avec le rôle admin accèdent au panel /admin.
+    // Tous les autres (formateur, etudiant) seront bloqués avec une erreur 403 Forbidden.
+    public function boot(): void
+    {
+        Filament::serving(function () {
+            if (!Auth::user()?->hasRole('admin')) {
+                abort(403);
+            }
+        });
+    }
+
+
 }

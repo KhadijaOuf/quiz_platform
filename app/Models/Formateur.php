@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Formateur extends Model
 {
-    protected $fillable = ['user_id', 'cin', 'adresse', 'departement'];
+    protected $fillable = ['user_id', 'nom_complet', 'cin', 'adresse', 'departement'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

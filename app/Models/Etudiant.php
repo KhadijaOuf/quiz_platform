@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Etudiant extends Model
 {
-    protected $fillable = ['user_id', 'cin', 'age', 'adresse', 'specialite', 'annee_inscription'];
+    protected $fillable = ['user_id','nom_complet', 'cin', 'age', 'adresse', 'specialite', 'annee_inscription'];
 
     public function user(): BelongsTo
     {

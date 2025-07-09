@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\AdminAuthController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -14,9 +16,22 @@ Route::get('/', function () {
     ]);
 });
 
+
+// Dashboard après login Breeze
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = Auth::user();
+
+    if ($user->hasRole('formateur')) {
+        return to_route('formateur.dashboard');
+    } elseif ($user->hasRole('etudiant')) {
+        return to_route('etudiant.dashboard');
+    }
+
+    // Bloquer si l'admin passe par là
+    Auth::logout();
+    return redirect()->route('admin.login')->withErrors(['email' => 'Veuillez utiliser la page admin.']);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -24,34 +39,33 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+
 // mes routes :
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('admin.dashboard');
-
-    Route::get('/gestionFormateurs', function () {
-        return Inertia::render('Admin/GestionFormateurs');
-    })->name('admin.gestionFormateurs');
-
-    Route::get('/gestionEtudiants', function () {
-        return Inertia::render('Admin/GestionEtudiants');
-    })->name('admin.gestionEtudiants');
+Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Etudiant/Dashboard'))->name('etudiant.dashboard');
 });
 
 Route::middleware(['auth', 'role:formateur'])->prefix('formateur')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Formateur/Dashboard');
-    })->name('formateur.dashboard');
-
+    Route::get('/dashboard', fn() => Inertia::render('Formateur/Dashboard'))->name('formateur.dashboard');
 });
 
-Route::middleware(['auth', 'role:etudiant'])->prefix('etudiant')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Formateur/Dashboard');
-    })->name('fomateur.dashboard');
-
-});
 
 require __DIR__ . '/auth.php';
+
+
+// Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+//     Route::get('/dashboard', function () {
+//         return Inertia::render('Admin/Dashboard');
+//     })->name('admin.dashboard');
+
+//     Route::get('/gestionFormateurs', function () {
+//         return Inertia::render('Admin/GestionFormateurs');
+//     })->name('admin.gestionFormateurs');
+
+//     Route::get('/gestionEtudiants', function () {
+//         return Inertia::render('Admin/GestionEtudiants');
+//     })->name('admin.gestionEtudiants');
+// });
