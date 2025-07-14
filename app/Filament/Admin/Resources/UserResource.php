@@ -18,31 +18,23 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     
 
     public static function form(Form $form): Form
     {
         return $form
+            // formulaire d'edition
             ->schema([
-                Forms\Components\TextInput::make('Nom utilisateur')
-                    ->required()
-                    ->maxLength(191),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(191),
-                Forms\Components\TextInput::make('mot de passe')
-                    ->password()
-                    ->required()
-                    ->maxLength(191),
+                Forms\Components\TextInput::make('name')->label('Nom utilisateur')->maxLength(191),
+                Forms\Components\TextInput::make('email')->email()->maxLength(191),
+                Forms\Components\TextInput::make('password')->label('mot de passe')->maxLength(191),
                 Forms\Components\Select::make('role')
                     ->options([
                         'admin' => 'Admin',
                         'formateur' => 'Formateur',
                         'etudiant' => 'Etudiant',
-                    ])
-                    ->required(),
+                    ]),
             ]);
     }
 
@@ -50,15 +42,11 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-
-                Tables\Columns\TextColumn::make('name')->label('Nom de l\'utilisateur')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')->label('Nom de l\'utilisateur')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Role')
                     ->badge()
                     ->color(function ($state) {
                         return match (strtolower($state)) {
@@ -76,11 +64,11 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->icon('heroicon-o-pencil')
                     ->label('') 
-                    ->tooltip('Modifier l’utilisateur'),
+                    ->tooltip('Modifier'),
                 Tables\Actions\DeleteAction::make()
                     ->icon('heroicon-o-trash')
                     ->label('') 
-                    ->tooltip('Supprimer l’utilisateur'),
+                    ->tooltip('Supprimer'),
                 Tables\Actions\Action::make('resetPassword')
                     ->icon('heroicon-o-key')
                     ->label('')
@@ -92,9 +80,7 @@ class UserResource extends Resource
                     ->color('info'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                    Tables\Actions\DeleteBulkAction::make()
             ]);
     }
 
@@ -104,4 +90,11 @@ class UserResource extends Resource
             'index' => Pages\ManageUsers::route('/'),
         ];
     }
+
+    public static function canCreate(): bool {  return false;  /* desactiver la creation de user */ }
+    /* Garder l’édition pour :
+        Changer mot de passe
+        Modifier l’email ou nom
+        Changer les rôles (via Spatie)
+    */
 }

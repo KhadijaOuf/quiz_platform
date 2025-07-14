@@ -47,6 +47,19 @@ class User extends Authenticatable
         return $this->hasRole('etudiant');
     }
 
+    protected static function booted()
+    {
+        // assurer la suppression des relations sformateur et etudiant lors de la suppression d'un utilisateur
+        static::deleting(function ($user) {
+            if ($user->formateur) {
+                $user->formateur->delete();
+            }
+            if ($user->etudiant) {
+                $user->etudiant->delete();
+            }
+        });
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -15,9 +15,9 @@ class Module extends Model
         return $this->belongsToMany(Formateur::class, 'formateur_module');
     }
 
-    public function etudiants(): BelongsToMany
+    public function specialites(): BelongsToMany
     {
-        return $this->belongsToMany(Etudiant::class, 'etudiant_module');
+        return $this->belongsToMany(Specialite::class, 'module_specialite');
     }
 
     public function quizzes(): HasMany

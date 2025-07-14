@@ -11,11 +11,9 @@ use App\Models\Formateur;
 class ManageFormateurs extends ManageRecords
 {
     protected static string $resource = FormateurResource::class;
-    
+
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 }

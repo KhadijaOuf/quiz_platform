@@ -15,9 +15,9 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->unique()->onDelete('cascade');
             $table->string('nom_complet', 50);
             $table->string('cin', 20)->unique();
-            $table->integer('age')->nullable();
+            $table->date('date_naissance');
             $table->string('adresse', 50)->nullable();
-            $table->string('specialite', 50)->nullable();
+            $table->foreignId('specialite_id')->constrained()->onDelete('cascade');
             $table->year('annee_inscription')->nullable();
             $table->timestamps();
         });

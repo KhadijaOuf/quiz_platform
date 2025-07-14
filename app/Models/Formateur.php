@@ -19,5 +19,11 @@ class Formateur extends Model
         return $this->belongsToMany(Module::class, 'formateur_module');
     }
 
-    //
+    protected static function booted()
+    {
+        static::deleting(function ($formateur) {
+            // Détache tous les modules liés avant suppression
+            $formateur->modules()->detach();
+        });
+    }
 }

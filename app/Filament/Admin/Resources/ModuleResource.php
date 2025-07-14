@@ -10,20 +10,22 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ModuleResource extends Resource
 {
     protected static ?string $model = Module::class;
-    protected static ?int $navigationSort = 4;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nom')
+                    ->label('Nom du module')
                     ->required()
                     ->maxLength(191),
             ]);
@@ -47,14 +49,21 @@ class ModuleResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                CreateAction::make()
+            ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil')
+                    ->label('') 
+                    ->tooltip('Modifier'),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash')
+                    ->label('') 
+                    ->tooltip('Supprimer'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
