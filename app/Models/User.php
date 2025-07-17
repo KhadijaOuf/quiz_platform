@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     protected static function booted()
     {
-        // assurer la suppression des relations sformateur et etudiant lors de la suppression d'un utilisateur
+        // assurer la suppression des relations formateur et etudiant lors de la suppression d'un utilisateur
         static::deleting(function ($user) {
             if ($user->formateur) {
                 $user->formateur->delete();
@@ -57,6 +57,8 @@ class User extends Authenticatable
             if ($user->etudiant) {
                 $user->etudiant->delete();
             }
+            // Supprimer les rôles associés dans model_has_roles
+            $user->roles()->detach();
         });
     }
 

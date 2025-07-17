@@ -1,9 +1,9 @@
 import DashboardLayout from '@/Layouts/FormateurDashboardLayout'
 
-export default function CreerQuiz() {
+export default function ModulesPage() {
   return (
     <DashboardLayout>
-      creer
+      ModulesPage
     </DashboardLayout>
   )
 }

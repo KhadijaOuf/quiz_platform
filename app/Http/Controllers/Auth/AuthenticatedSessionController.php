@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -30,26 +29,46 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $expectedRole = $request->input('role'); // 'formateur' ou 'etudiant'
+
+        if (!is_string($expectedRole)) {
+            return back()->withErrors([
+                'email' => 'Rôle non spécifié.',
+            ]);
+        }
+
+        $credentials = $request->only('email', 'password');
+
+        // Choisir le guard en fonction du rôle
+        $guard = match ($expectedRole) {
+            'formateur' => 'formateur',
+            'etudiant' => 'etudiant',
+            default => 'web',
+        };
+
+        // Authentifier avec le bon guard
+        if (!Auth::guard($guard)->attempt($credentials, $request->boolean('remember'))) {
+            return back()->withErrors([
+                'email' => 'Les identifiants sont incorrects.',
+            ]);
+        }
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        $user = Auth::guard($guard)->user();
 
-        if ($user->hasRole('admin')) {
-            Auth::logout();
-            return redirect()->away(route('admin.login'))->withErrors(['email' => 'Veuillez utiliser la page de connexion admin.']);
-            // on bloque la connexion via ce contrôleur car un admin doit passer par /admin/login (login Filament)
-        } elseif ($user->hasRole('formateur')) {
-            return redirect()->route('formateur.dashboard');
-        } elseif ($user->hasRole('etudiant')) {
-            return redirect()->route('etudiant.dashboard');
-        } else {
-            // Si pas de rôle ou rôle inconnu)
-            Auth::logout();
-            return redirect()->route('login')->withErrors(['email' => 'Votre compte ne peut pas se connecter ici.']);
+        if (!$user->hasRole($expectedRole)) {
+            Auth::guard($guard)->logout();
+            return back()->withErrors([
+                'email' => 'Vous n’avez pas le rôle requis.',
+            ]);
         }
 
+        return match ($expectedRole) {
+            'formateur' => redirect()->route('formateur.dashboard'),
+            'etudiant' => redirect()->route('etudiant.dashboard'),
+            default => redirect('/'),
+        };
     }
 
     /**
@@ -57,12 +76,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        // Déconnexion de tous les guards possibles
+        foreach (['web', 'formateur', 'etudiant',] as $guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+            }
+        }
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
     }
 }
+

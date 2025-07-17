@@ -20,15 +20,15 @@ class AdminAuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $user = Auth::guard('admin')->user();
 
             if ($user->hasRole('admin')) {
                 $request->session()->regenerate();
                 return redirect()->intended('/admin');
             }
 
-            Auth::logout();
+            Auth::guard('admin')->logout();
             return redirect()->route('admin.login')->withErrors([
                 'email' => 'Vous n\'avez pas les droits d\'accès admin.',
             ]);

@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->id('admin')  // id de panel
-            ->path('admin') 
+            ->path('admin')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -54,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->authGuard('web'); // si tu utilises le guard web
+            ->authGuard('admin'); // si tu utilises le guard web
     }
 
     //  exécuté quand Filament démarre, pour vérifier le rôle.
@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
     public function boot(): void
     {
         Filament::serving(function () {
-            if (!Auth::user()?->hasRole('admin')) {
+            if (!Auth::guard('admin')->user()?->hasRole('admin')) {
                 abort(403);
             }
         });
