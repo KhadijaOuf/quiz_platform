@@ -77,7 +77,7 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         // Déconnexion de tous les guards possibles
-        foreach (['web', 'formateur', 'etudiant',] as $guard) {
+        foreach (['web', 'formateur', 'etudiant', 'admin'] as $guard) {
             if (Auth::guard($guard)->check()) {
                 Auth::guard($guard)->logout();
             }

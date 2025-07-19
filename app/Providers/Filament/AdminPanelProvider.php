@@ -54,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->authGuard('admin'); // si tu utilises le guard web
+            ->authGuard('admin'); 
     }
 
     //  exécuté quand Filament démarre, pour vérifier le rôle.

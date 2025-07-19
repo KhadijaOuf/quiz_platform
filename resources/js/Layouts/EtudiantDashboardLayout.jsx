@@ -1,25 +1,32 @@
 import React, { useState } from 'react'
-import { Link, usePage } from '@inertiajs/react'
+import { Link, usePage, useForm } from '@inertiajs/react'
 
-export default function FormateurDashboardLayout({ children }) {
+export default function EtudiantDashboardLayout({ children }) {
   const { auth, url } = usePage().props
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen)
+
+  const { post } = useForm()
+
+  const logout = (e) => {
+    e.preventDefault()
+    post('logout')
+  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-orange-100 text-gray-800">
       {/* Sidebar */}
       <aside className="w-60 bg-white shadow-md hidden md:block">
         <div className="p-4 pt-7 pb-7 text-lg font-bold text-gray-800 border-b border-gray-200">
-          Espace Formateur
+          Espace Etudiant
         </div>
         <nav className="p-4 space-y-2 text-sm">
-          <SidebarLink href="/formateur/dashboard" label="Accueil" />
-          <SidebarLink href="/formateur/modules" label="Mes Modules" />
-          <SidebarLink href="/formateur/quizzes/create" label="Créer un Quiz" />
-          <SidebarLink href="/formateur/corrections" label="Correction" />
-          <SidebarLink href="/formateur/statistiques" label="Statistiques" />
+          <SidebarLink href="" label="Accueil" />
+          <SidebarLink href="" label="" />
+          <SidebarLink href="" label="Mes Quizzes" />
+          <SidebarLink href="" label="Correction" />
+          <SidebarLink href="" label="" />
         </nav>
       </aside>
 
@@ -62,14 +69,12 @@ export default function FormateurDashboardLayout({ children }) {
                   </Link>
                 </li>
                 <li>
-                  <form method="POST" action="/logout">
                     <button
-                      type="submit"
+                      onClick={logout}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                     >
                       Déconnexion
                     </button>
-                  </form>
                 </li>
               </ul>
             )}

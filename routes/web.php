@@ -27,6 +27,16 @@ Route::get('/', function () {
         // L'utilisateur est connecté -> redirection vers son dashboard
         return redirect()->route('dashboard');
     }
+    // add later
+    // if (Auth::guard('formateur')->check()) {
+    //     return redirect()->route('formateur.dashboard');
+    // }
+    // if (Auth::guard('etudiant')->check()) {
+    //     return redirect()->route('etudiant.dashboard');
+    // }
+    // if (Auth::guard('admin')->check()) {
+    //     return redirect('/admin');
+    // }
 
     // Sinon, on affiche la page publique d'accueil
     return Inertia::render('Welcome', [
@@ -83,14 +93,15 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth:formateur'])->prefix('formateur')->group(function () {
     Route::get('/dashboard', [FormateurDashboardController::class, 'index'])->name('formateur.dashboard');
 
-    // Spécialités et modules
-    Route::get('/specialites', [SpecialiteController::class, 'index'])->name('specialites.index');
-    Route::get('/specialites/{specialite}/modules', [ModuleController::class, 'index'])->name('modules.index');
+    // Modules
+    Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
     // Quiz
-    Route::get('/modules/{module}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
-    Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-    Route::post('/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::prefix('modules/{module}')->group(function () {
+        Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+        Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+        Route::post('/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+        Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    });
     // Questions (par quiz)
     Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index'])->name('questions.index');
     Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])->name('questions.store');
@@ -106,7 +117,7 @@ Route::middleware(['auth:formateur'])->prefix('formateur')->group(function () {
     Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
 });
 
-Route::middleware(['auth:etudiant', 'etudiant'])->prefix('etudiant')->group(function () {
+Route::middleware(['auth:etudiant'])->prefix('etudiant')->group(function () {
     Route::get('/dashboard', [EtudiantDashboardController::class, 'index'])->name('etudiant.dashboard');
 });
 
