@@ -24,6 +24,7 @@ class QuizResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->label('Titre')
                     ->required()
                     ->maxLength(191),
                 Forms\Components\Textarea::make('description')
@@ -35,10 +36,10 @@ class QuizResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\Select::make('module_id')
-                    ->relationship('module', 'id')
+                    ->relationship('module', 'nom')
                     ->required(),
                 Forms\Components\Select::make('formateur_id')
-                    ->relationship('formateur', 'id')
+                    ->relationship('formateur', 'nom_complet')
                     ->required(),
             ]);
     }
@@ -48,19 +49,28 @@ class QuizResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Titre')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('module.nom')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('formateur.nom_complet')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('note_reussite')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('module.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('formateur.id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Statut')
+                    ->colors([
+                        'success' => 'actif',
+                        'warning' => 'inactif',
+                        'danger' => 'archivé',
+                    ])
+                    ->getStateUsing(fn ($record) => $record->status),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -70,13 +80,17 @@ class QuizResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil')
+                    ->label('') 
+                    ->tooltip('Modifier'),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash')
+                    ->label('') 
+                    ->tooltip('Supprimer'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                    Tables\Actions\DeleteBulkAction::make()
             ]);
     }
 

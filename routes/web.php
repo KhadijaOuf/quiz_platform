@@ -7,14 +7,17 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Formateur\DashboardController as FormateurDashboardController;
-use App\Http\Controllers\Formateur\QuizController;
-use App\Http\Controllers\Formateur\SpecialiteController;
 use App\Http\Controllers\Formateur\ModuleController;
+use App\Http\Controllers\Formateur\QuizController as FormateurQuizController;
+use App\Http\Controllers\Formateur\QuestionController as FormateurQuestionController;
+use App\Http\Controllers\Formateur\SpecialiteController;
 use App\Http\Controllers\Formateur\CorrectionController;
 use App\Http\Controllers\Formateur\StatistiquesController;
-use App\Http\Controllers\Formateur\QuestionController;
 use App\Http\Controllers\Formateur\TentativeController;
+
 use App\Http\Controllers\Etudiant\DashboardController as EtudiantDashboardController;
+use App\Http\Controllers\Etudiant\QuizController as EtudiantQuizController;
+use App\Http\Controllers\Etudiant\QuestionController as EtudiantQuestionController;
 
 
 
@@ -37,6 +40,15 @@ Route::get('/', function () {
     // if (Auth::guard('admin')->check()) {
     //     return redirect('/admin');
     // }
+    if (Auth::guard('formateur')->check()) {
+        return redirect()->route('formateur.dashboard');
+    }
+    if (Auth::guard('etudiant')->check()) {
+        return redirect()->route('etudiant.dashboard');
+    }
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin');
+    }
 
     // Sinon, on affiche la page publique d'accueil
     return Inertia::render('Welcome', [
@@ -93,32 +105,66 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth:formateur'])->prefix('formateur')->group(function () {
     Route::get('/dashboard', [FormateurDashboardController::class, 'index'])->name('formateur.dashboard');
 
-    // Modules
+// Modules
     Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
-    // Quiz
-    Route::prefix('modules/{module}')->group(function () {
-        Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
-        Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-        Route::post('/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-        Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+
+// Quizzes
+    Route::prefix('quizzes')->name('quizzes.')->group(function () {
+        Route::get('/', [FormateurQuizController::class, 'index'])->name('index');
+        Route::get('/create', [FormateurQuizController::class, 'create'])->name('create');
+        Route::post('/', [FormateurQuizController::class, 'store'])->name('store');
+
+        // Archive des quizzes
+        Route::get('/archives', [FormateurQuizController::class, 'archives'])->name('archives');
+
+        // Actions sur quiz
+        Route::get('/{quiz}', [FormateurQuizController::class, 'show'])->name('show');
+        Route::put('/{quiz}', [FormateurQuizController::class, 'update'])->name('update');
+        Route::put('/{quiz}/activer', [FormateurQuizController::class, 'activer'])->name('activer');
+        Route::put('/{quiz}/archive', [FormateurQuizController::class, 'archive'])->name('archive');
+        Route::delete('/{quiz}', [FormateurQuizController::class, 'destroy'])->name('destroy');
+
+        // Questions d’un quiz
+        Route::get('/{quiz}/questions', [FormateurQuestionController::class, 'index'])->name('questions.index');
+        Route::post('/{quiz}/questions', [FormateurQuestionController::class, 'store'])->name('questions.store');
+        Route::put('/{quiz}/questions/order', [FormateurQuestionController::class, 'updateOrder'])->name('questions.updateOrder');
+        Route::delete('{quiz}/questions/{question}', [FormateurQuestionController::class, 'destroy'])->name('questions.destroy');
+        
+
+        // Tentatives
+        Route::get('/{quiz}/tentatives', [TentativeController::class, 'index'])->name('tentatives.index');
+
+        // Statistiques d’un quiz
+        Route::get('/{quiz}/statistiques', [StatistiquesController::class, 'quiz'])->name('statistiques');
     });
-    // Questions (par quiz)
-    Route::get('/quizzes/{quiz}/questions', [QuestionController::class, 'index'])->name('questions.index');
-    Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])->name('questions.store');
-    // Tentatives / Résultats des étudiants
-    Route::get('/quizzes/{quiz}/tentatives', [TentativeController::class, 'index'])->name('tentatives.index');
-    // Correction manuelle
-    Route::get('/corrections', [CorrectionController::class, 'index'])->name('corrections.index');
-    Route::get('/corrections/{tentative}', [CorrectionController::class, 'show'])->name('corrections.show');
-    Route::post('/corrections/{tentative}', [CorrectionController::class, 'store'])->name('corrections.store');
-    // Statistiques (par quiz)
-    Route::get('/quizzes/{quiz}/statistiques', [StatistiquesController::class, 'quiz'])->name('statistiques.quiz');
+
+    // Corrections
+    Route::prefix('corrections')->name('corrections.')->group(function () {
+        Route::get('/', [CorrectionController::class, 'index'])->name('index');
+        Route::get('/{tentative}', [CorrectionController::class, 'show'])->name('show');
+        Route::post('/{tentative}', [CorrectionController::class, 'store'])->name('store');
+    });
+
     // Statistiques globales
     Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
+  
 });
 
-Route::middleware(['auth:etudiant'])->prefix('etudiant')->group(function () {
-    Route::get('/dashboard', [EtudiantDashboardController::class, 'index'])->name('etudiant.dashboard');
+
+Route::middleware(['auth:etudiant'])->prefix('etudiant')->name('etudiant.')->group(function () {
+    Route::get('/dashboard', [EtudiantDashboardController::class, 'index'])->name('dashboard');
+    Route::prefix('quizzes')->name('quizzes.')->group(function () {
+        Route::get('/', [EtudiantQuizController::class, 'index'])->name('index');
+        Route::get('/{quiz}/passer', [EtudiantQuizController::class, 'passer'])->name('passer');
+        Route::post('/{quiz}/soumettre', [EtudiantQuizController::class, 'soumettre'])->name('quiz.soumettre');
+        Route::get('/{quiz}/resultats', [EtudiantQuizController::class, 'resultats'])->name('resultats');
+        Route::get('/{quiz}/tentatives', [EtudiantQuizController::class, 'tentatives'])->name('tentatives');
+        Route::get('/{quiz}/tentatives/{tentative}', [EtudiantQuizController::class, 'tentative'])->name('tentative');
+        Route::get('/{quiz}/tentatives/{tentative}/correction', [EtudiantQuizController::class, 'correction'])->name('tentative.correction');
+        Route::get('/{quiz}/tentatives/{tentative}/reponses', [EtudiantQuizController::class, 'reponses'])->name('tentative.reponses');
+    });
+
+
 });
 
 

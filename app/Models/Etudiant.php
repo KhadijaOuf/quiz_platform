@@ -14,7 +14,8 @@ class Etudiant extends Model
 
 public function getAgeAttribute()
 {
-    return $this->date_naissance ? \Carbon\Carbon::parse($this->date_naissance)->age : null;
+    $dateNaissance = $this->attributes['date_naissance'] ?? null;
+    return $dateNaissance ? \Carbon\Carbon::parse($dateNaissance)->age : null;
 }
 
     public function user(): BelongsTo

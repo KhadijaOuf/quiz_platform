@@ -1,9 +1,0 @@
-import DashboardLayout from '@/Layouts/FormateurDashboardLayout'
-
-export default function CreerQuiz() {
-  return (
-    <DashboardLayout>
-      creer
-    </DashboardLayout>
-  )
-}

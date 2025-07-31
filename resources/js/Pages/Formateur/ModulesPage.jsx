@@ -46,7 +46,7 @@ export default function ModulesPage({ modules, specialites }) {
             value={rechercheNom}
             onChange={(e) => setRechercheNom(e.target.value)}
             placeholder="Recherche ..."
-            className="border rounded-lg p-1 w-64"
+            className="border rounded-lg p-1 w-64 focus:ring-orange-500 focus:border-orange-500"
           />
         </div>
       </div>

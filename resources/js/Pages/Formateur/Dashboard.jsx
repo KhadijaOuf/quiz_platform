@@ -4,7 +4,7 @@ import { BookOpenIcon, DocumentTextIcon, EyeIcon,ClipboardDocumentCheckIcon,Arro
 import { Link, usePage } from '@inertiajs/react'
 import StatCard from '@/Components/StatCard'
 
-export default function DashboardFormateur() {
+export default function Dashboard() {
       const {
         auth,
         modulesCount,
@@ -50,7 +50,7 @@ export default function DashboardFormateur() {
                   recentTentatives.map((t) => (
                     <tr key={t.id} className="border-t">
                       <td className="p-3">{t.etudiant?.nom}</td>
-                      <td className="p-3">{t.quiz?.titre}</td>
+                      <td className="p-3">{t.quiz?.title}</td>
                       <td className="p-3">{t.score ?? 'N/A'}%</td>
                       <td className="p-3">
                         {new Date(t.created_at).toLocaleDateString()}
@@ -73,6 +73,7 @@ export default function DashboardFormateur() {
                   <th className="p-3">Titre</th>
                   <th className="p-3">Module</th>
                   <th className="p-3">Date</th>
+                  <th className="p-3">Statut</th>
                   <th className="p-3">Actions</th>
                 </tr>
               </thead>
@@ -86,15 +87,16 @@ export default function DashboardFormateur() {
                 ) : (
                   recentQuizzes.map((quiz) => (
                     <tr key={quiz.id} className="border-t">
-                      <td className="p-3">{quiz.titre}</td>
+                      <td className="p-3">{quiz.title}</td>
                       <td className="p-3">{quiz.module?.nom}</td>
                       <td className="p-3">
                         {new Date(quiz.created_at).toLocaleDateString()}
                       </td>
+                      <td className="p-3">{quiz.est_actif ? 'Actif' : 'Innactif'}</td>
                       <td className="p-3 text-right">
                         <Link
-                          href={`/formateur/modules/${quiz.module_id}/quizzes/${quiz.id}`}
-                          className="text-orange-600 hover:underline flex items-center space-x-1 justify-end"
+                          href={`/formateur/quizzes/${quiz.id}/questions`}
+                          className="text-orange-600 hover:underline flex items-center space-x-1 justify-start pr-3"
                           title="Voir ce quiz"
                         >
                           <EyeIcon className="h-4 w-4" />
@@ -109,7 +111,7 @@ export default function DashboardFormateur() {
           </div>
           <div className="mt-2 text-right">
             <Link
-              href="/formateur/modules"
+              href="/formateur/quizzes"
               className="text-sm text-gray-600 hover:underline flex items-center justify-end space-x-1"
             >
               <span>Voir tous les quiz</span>

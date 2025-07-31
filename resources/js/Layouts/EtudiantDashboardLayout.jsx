@@ -1,18 +1,12 @@
 import React, { useState } from 'react'
-import { Link, usePage, useForm } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
+import SidebarLink from '@/Components/SidebarLink'
 
 export default function EtudiantDashboardLayout({ children }) {
-  const { auth, url } = usePage().props
+  const { auth } = usePage().props
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen)
-
-  const { post } = useForm()
-
-  const logout = (e) => {
-    e.preventDefault()
-    post('logout')
-  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-orange-100 text-gray-800">
@@ -22,11 +16,8 @@ export default function EtudiantDashboardLayout({ children }) {
           Espace Etudiant
         </div>
         <nav className="p-4 space-y-2 text-sm">
-          <SidebarLink href="" label="Accueil" />
-          <SidebarLink href="" label="" />
-          <SidebarLink href="" label="Mes Quizzes" />
-          <SidebarLink href="" label="Correction" />
-          <SidebarLink href="" label="" />
+          <SidebarLink href="/etudiant/dashboard" label="Accueil" />
+          <SidebarLink href="/etudiant/quizzes" label="Mes Quizzes" />
         </nav>
       </aside>
 
@@ -35,9 +26,8 @@ export default function EtudiantDashboardLayout({ children }) {
         {/* Header */}
         <header className="px-6 p-6 flex justify-between items-center">
           <h1 className="text-sm text-gray-600 mt-1">
-            Bonjour, <strong>{auth?.user?.name}</strong>
+            
           </h1>
-
           <div className="relative">
             <button
               onClick={toggleDropdown}
@@ -69,12 +59,14 @@ export default function EtudiantDashboardLayout({ children }) {
                   </Link>
                 </li>
                 <li>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                    >
-                      Déconnexion
-                    </button>
+                  <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                  >
+                    Déconnexion
+                  </Link>
                 </li>
               </ul>
             )}
@@ -85,23 +77,5 @@ export default function EtudiantDashboardLayout({ children }) {
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
-  )
-}
-
-function SidebarLink({ href, label }) {
-  const { url } = usePage()
-  const active = url.startsWith(href)
-
-  return (
-    <Link
-      href={href}
-      className={`block px-4 py-2 rounded ${
-        active
-          ? 'bg-orange-100 text-orange-600 font-semibold'
-          : 'hover:bg-orange-50 text-gray-700'
-      }`}
-    >
-      {label}
-    </Link>
   )
 }

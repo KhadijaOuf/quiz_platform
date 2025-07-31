@@ -14,8 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->text('enonce');
-            $table->enum('type', ['single', 'multiple', 'vrai_faux', 'text', 'gap_fill']);
+            $table->enum('type', ['single', 'multiple', 'vrai_faux', 'text']);
             $table->float('note')->default(1);
+            $table->unsignedInteger('ordre')->default(1);
             $table->timestamps();
         });
     }

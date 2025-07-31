@@ -18,7 +18,14 @@ return new class extends Migration {
             $table->integer('note_reussite');
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->foreignId('formateur_id')->constrained()->onDelete('cascade');
-            $table->timestamp('created_at')->nullable()->useCurrent();
+            // Période de disponibilité
+            $table->dateTime('disponible_du')->nullable();
+            $table->dateTime('disponible_jusquau')->nullable();
+            // La disponibilité du quiz aux étudiants -> le verrouillage de la modification côté formateur
+            $table->boolean('est_actif')->default(false);
+            $table->boolean('archived')->default(false); // champ pour archiver le quiz
+
+            $table->timestamps();
         });
     }
 
