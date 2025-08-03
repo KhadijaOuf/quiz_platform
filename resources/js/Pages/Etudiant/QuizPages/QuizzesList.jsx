@@ -5,10 +5,11 @@ import QuizCard from '@/Components/QuizCard' // adapte le chemin selon ton proje
 
 export default function MesQuizzes() {
   const { quizzes } = usePage().props
-
+ // Affiche dans la console ce que tu reçois côté frontend
+  console.log('Quizzes reçus du backend : ', quizzes)
   return (
     <DashboardLayout>
-      <div className="p-6 space-y-6">
+      <div className="mt-6">
         <h1 className="text-2xl font-bold mb-4">Mes quizzes disponibles</h1>
 
         {quizzes.length === 0 ? (

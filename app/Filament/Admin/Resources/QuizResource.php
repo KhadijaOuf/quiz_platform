@@ -59,10 +59,15 @@ class QuizResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->default('-'),
                 Tables\Columns\TextColumn::make('note_reussite')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Note de réussite')
+                    ->sortable()
+                    ->getStateUsing(function ($record) {
+                        $noteTotale = $record->note_totale ?? 0;
+                        return "{$record->note_reussite} / {$noteTotale}";
+                    }),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Statut')
                     ->colors([

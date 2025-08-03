@@ -8,6 +8,13 @@ use App\Http\Controllers\Admin\AdminAuthController;
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
+Route::middleware(['auth:admin'])->group(function () {
+    // Admin dashboard via Filament
+    Route::get('/admin/dashboard', function () {
+        return redirect('/admin');
+    })->name('admin.dashboard');
+});
+
 // Dans routes/web.php
 Route::get('/login', function () {
     return redirect()->route('welcome');

@@ -18,20 +18,5 @@ class SpecialiteController extends Controller
         return Inertia::render('Formateur/SpecialitesPage', ['specialites' => $specialites]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Module $module)
-    {
-        //
-    }
  
 }

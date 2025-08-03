@@ -15,30 +15,27 @@ class AdminAuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $user = Auth::guard('admin')->user();
+        // Force l'utilisation du guard admin
+        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
+            $request->session()->regenerate();
 
-            if ($user->hasRole('admin')) {
-                $request->session()->regenerate();
-                return redirect()->intended('/admin');
-            }
-
-            Auth::guard('admin')->logout();
-            return redirect()->route('admin.login')->withErrors([
-                'email' => 'Vous n\'avez pas les droits d\'accès admin.',
-            ]);
+            // Redirection manuelle vers le bon dashboard admin
+            return redirect()->intended(route('filament.admin.pages.dashboard'));
         }
 
         return back()->withErrors([
-            'email' => 'Identifiants incorrects.',
+            'email' => 'Identifiants invalides ou accès non autorisé.',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('admin.login');
+    }
 }
-
-
-

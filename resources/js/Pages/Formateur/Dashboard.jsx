@@ -49,9 +49,15 @@ export default function Dashboard() {
                 ) : (
                   recentTentatives.map((t) => (
                     <tr key={t.id} className="border-t">
-                      <td className="p-3">{t.etudiant?.nom}</td>
+                      <td className="p-3">{t.etudiant?.nom_complet || t.etudiant?.user?.name || 'Nom non disponible'}</td>
                       <td className="p-3">{t.quiz?.title}</td>
-                      <td className="p-3">{t.score ?? 'N/A'}%</td>
+                      <td className="p-3">
+                        {
+                          t.quiz.questions.some(q => q.type === 'text') 
+                          ? 'En attente' 
+                          : `${t.score} / ${t.quiz.note_totale}`
+                        }
+                      </td>
                       <td className="p-3">
                         {new Date(t.created_at).toLocaleDateString()}
                       </td>

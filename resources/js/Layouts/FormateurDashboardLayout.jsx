@@ -9,9 +9,12 @@ export default function FormateurDashboardLayout({ children }) {
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen)
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-orange-100 text-gray-800">
-      {/* Sidebar */}
-      <aside className="w-60 bg-white shadow-md hidden md:block">
+    <div
+      className="flex min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-orange-100 text-gray-800 overflow-x-hidden"
+      style={{ overflowX: 'hidden' }} // pour s'assurer pas de scroll horizontal
+    >
+      {/* Sidebar fixe */}
+      <aside className="w-60 bg-white shadow-md hidden md:block fixed h-screen top-0 left-0">
         <div className="p-4 pt-7 pb-7 text-lg font-bold text-gray-800 border-b border-gray-200">
           Espace Formateur
         </div>
@@ -20,14 +23,20 @@ export default function FormateurDashboardLayout({ children }) {
           <SidebarLink href="/formateur/modules" label="Mes Modules" />
           <SidebarLink href="/formateur/quizzes" label="Mes Quizzes" />
           <SidebarLink href="/formateur/quizzes/create" label="Créer un Quiz" />
-          <SidebarLink href="/formateur/corrections" label="Correction" />
-          <SidebarLink href="/formateur/statistiques" label="Statistiques" />
+          <SidebarLink href="/formateur/correction" label="Correction" />
           <SidebarLink href="/formateur/quizzes/archives" label="Archives" />
         </nav>
       </aside>
 
-      {/* Main area */}
-      <div className="flex-1 flex flex-col">
+      {/* Contenu principal qui prend la largeur restante */}
+      <div
+        className="flex flex-col"
+        style={{
+          marginLeft: '15rem', // = 240px = w-60
+          width: 'calc(100vw - 15rem)',
+          minHeight: '100vh',
+        }}
+      >
         {/* Header */}
         <header className="px-6 p-6 flex justify-between items-center">
           <h1 className="text-sm text-gray-600 mt-1">
@@ -80,8 +89,9 @@ export default function FormateurDashboardLayout({ children }) {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
     </div>
   )
 }
+

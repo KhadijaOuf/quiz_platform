@@ -45,7 +45,7 @@ export default function Dashboard() {
                 <li key={quiz.id} className="bg-white p-4 rounded shadow">
                   <h4 className="text-md font-bold">{quiz.title}</h4>
                   <p className="text-sm text-gray-600">{quiz.description}</p>
-                  <p className="text-sm text-gray-500 mt-1">Durée : {quiz.duration} min</p>
+                  <p className="text-sm text-gray-500 mt-1">Durée : {quiz.duration ? `${quiz.duration} min` : 'illimitée'}</p>
                 </li>
               ))}
             </ul>

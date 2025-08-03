@@ -35,6 +35,11 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
+    public function tentatives(): HasMany
+    {
+        return $this->hasMany(Tentative::class);
+    }
+
     //  un accessor (propriété virtuelle et ne correspond pas à une vraie colonne en base de données)
     public function getStatusAttribute(): string
     {
@@ -53,11 +58,10 @@ class Quiz extends Model
         }
         return 'actif';
     }
-
-
-    public function tentatives(): HasMany
+    
+    public function getNoteTotaleAttribute(): float
     {
-        return $this->hasMany(Tentative::class);
+        return $this->questions()->sum('note');
     }
 
     public static function booted()

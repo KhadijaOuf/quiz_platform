@@ -13,16 +13,6 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
-    }
 
     /**
      * Handle an incoming authentication request.
@@ -76,17 +66,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Déconnexion de tous les guards possibles
-        foreach (['web', 'formateur', 'etudiant', 'admin'] as $guard) {
+        // Trouver le guard actif et le déconnecter
+        $guards = ['formateur', 'etudiant', 'admin', 'web'];
+
+        foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 Auth::guard($guard)->logout();
+                break;
             }
         }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/'); // redirige vers welcome
     }
 }
 

@@ -87,13 +87,25 @@ export default function QuizzesList({ quizzes }) {
                     <>
                       <Link
                         href={route('quizzes.show', quiz.id)}
-                        className="text-sm text-gray-700 hover:underline hover:text-orange-600"
+                        className="text-sm text-orange-600 hover:underline hover:text-orange-600"
                       >
                         Voir
                       </Link>
+                      <Link
+                        href={route('quizzes.tentatives.index', quiz.id)}
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        Tentatives
+                      </Link>
+                      <Link
+                        href={route('quizzes.statistiques', quiz.id)}
+                        className="text-sm text-green-600 hover:underline"
+                      >
+                        Statistiques
+                      </Link>
                       <button
                         onClick={() => {archiverQuiz(quiz.id)}}
-                        className="text-sm text-yellow-600 hover:underline"
+                        className="text-sm text-red-600 hover:underline"
                       >
                         Archiver
                       </button>

@@ -15,6 +15,14 @@ class QuizController extends Controller
 
     public function index()
     {
+        // archiver les quizzes dont la date de fin est dépassée
+        $now = Carbon::now();
+        Quiz::where('est_actif', true)
+            ->where('archived', false)
+            ->whereNotNull('disponible_jusquau')
+            ->where('disponible_jusquau', '<', $now)
+            ->update(['archived' => true, 'est_actif' => false]);
+
         $formateur = auth()->user()->formateur;
         // Récupère tous les quizzes du formateur
         $quizzes = $quizzes = Quiz::with('module')->withCount('tentatives')
@@ -22,6 +30,7 @@ class QuizController extends Controller
             ->where('archived', false)  // exclure archivés
             ->latest()
             ->get();
+            
         return Inertia::render('Formateur/QuizPages/QuizzesList', [
             'quizzes' => $quizzes
         ]);

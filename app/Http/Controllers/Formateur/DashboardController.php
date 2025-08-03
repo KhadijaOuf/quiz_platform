@@ -27,7 +27,16 @@ class DashboardController extends Controller
 
         $recentTentatives = Tentative::whereHas('quiz', function ($q) use ($moduleIds) {
             $q->whereIn('module_id', $moduleIds);
-        })->latest()->take(5)->with(['quiz', 'etudiant'])->get();
+        })
+        ->latest()
+        ->take(5)
+        ->with(['quiz.questions', 'etudiant.user']) // Ajoute quiz.questions ici
+        ->get()
+        ->map(function ($tentative) {
+            // Calcul de la note totale pour le quiz de cette tentative
+            $tentative->quiz->note_totale = $tentative->quiz->questions->sum('note');
+            return $tentative;
+        });
         // Récupère les tentatives dont le quiz est lié à l’un des module_id donnés
 
         return Inertia::render('Formateur/Dashboard', [

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ReponseDonnee extends Model
 {
     protected $fillable = ['tentative_id', 'question_id', 'texte', 'note_obtenue'];
+    
 
     public function tentative(): BelongsTo
     {

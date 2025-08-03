@@ -61,16 +61,18 @@ export default function QuizzesArchives({ quizzes }) {
                     {quiz.disponible_du ? new Date(quiz.disponible_du).toLocaleDateString() : '-'} → {quiz.disponible_jusquau ? new Date(quiz.disponible_jusquau).toLocaleDateString() : '-'}
                   </td>
                   <td className="px-6 text-right space-x-4">
-                    <button
+                    <Link
+                      href={`/formateur/quizzes/${quiz.id}/tentatives`}
                       className="text-sm text-gray-700 hover:text-orange-600 hover:underline"
                     >
                       Tentatives
-                    </button>
-                    <button
+                    </Link>
+                    <Link
+                      href={`/formateur/quizzes/${quiz.id}/statistiques`}
                       className="text-sm text-gray-700 hover:text-orange-600 hover:underline"
                     >
                       Statistiques
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))

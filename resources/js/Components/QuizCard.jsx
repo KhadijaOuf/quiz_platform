@@ -2,7 +2,10 @@ import React from 'react'
 import { Link } from '@inertiajs/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/fr'   // importer la locale française
 dayjs.extend(relativeTime)
+dayjs.locale('fr')  // activer la locale française
+
 
 export default function QuizCard({ quiz }) {
   // Calcul du temps restant avant la fin de disponibilité du quiz
@@ -20,7 +23,7 @@ export default function QuizCard({ quiz }) {
         <p className="text-sm text-gray-600 mb-2">{quiz.description}</p>
 
         <p className="text-sm mb-1">
-          <span className="font-semibold">Durée :</span> {quiz.duration} minutes
+          <span className="font-semibold">Durée :</span> {quiz.duration ? `${quiz.duration} min` : 'illimitée'}
         </p>
 
         <p className="text-sm mb-3">
@@ -34,7 +37,11 @@ export default function QuizCard({ quiz }) {
         )}
       </div>
 
-      {quiz.status === 'actif' ? (
+      {quiz.dejaPasse ? (
+        <span className="w-fit mt-4 px-4 py-2 bg-green-100 text-green-700 rounded cursor-default">
+          <span className="pb-5">✔️</span> Vous avez passé ce quiz
+        </span>
+      ) : quiz.status === 'actif' ? (
         <Link
           href={`/etudiant/quizzes/${quiz.id}/passer`}
           className="w-fit mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition"

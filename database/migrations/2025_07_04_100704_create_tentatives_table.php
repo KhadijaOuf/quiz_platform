@@ -17,8 +17,9 @@ return new class extends Migration {
             $table->timestamp('commence_a')->nullable();
             $table->timestamp('termine_a')->nullable();
             $table->float('score')->nullable();
-            $table->boolean('passed')->nullable()->default(false);
-            $table->timestamps();
+            $table->boolean('est_corrigee')->default(false);
+            $table->boolean('est_passed')->nullable()->default(false);
+            $table->timestamps(); 
         });
     }
 

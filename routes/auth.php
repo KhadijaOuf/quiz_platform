@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 # Authentification Breeze : login, logout, reset password...
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    //Route::get('register', [RegisteredUserController::class, 'create'])
+    //    ->name('register');
 
             // on va pas travailler evec ces routes Breeze :
     //Route::post('register', [RegisteredUserController::class, 'store']);

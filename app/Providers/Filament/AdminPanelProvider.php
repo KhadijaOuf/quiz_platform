@@ -41,6 +41,8 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
+                'web',
+            Authenticate::class, // => auth:admin
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -54,7 +56,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->authGuard('admin'); 
+            ->authGuard('admin');
+
     }
 
     //  exécuté quand Filament démarre, pour vérifier le rôle.
