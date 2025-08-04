@@ -12,8 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\CreateAction;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
+
 
 class FormateurResource extends Resource
 {
@@ -25,9 +25,6 @@ class FormateurResource extends Resource
     {
         return $form
             ->schema([
-                // Forms\Components\Select::make('user_id')
-                //     ->relationship('user', 'name')
-                //     ->required(),
                 // formulaire par defaut (pour creation et edit)
                 // on a personnaliser le formulaire de creation dans headerActions, donc ce form reste pour le edit
                 Forms\Components\TextInput::make('nom_complet')->label('Nom complet')->maxLength(30),
@@ -80,7 +77,7 @@ class FormateurResource extends Resource
                             'password' => bcrypt($data['password']),
                         ]);
                         // assigner le role de formateur
-                        $user->assignRole('formateur');
+                        $user->assignRole(Role::findByName('formateur', 'formateur'));
                         // Injecter user_id dans les données Formateur
                         $data['user_id'] = $user->id;
                         // supprimer les champs inutile pour la table 'formateur'

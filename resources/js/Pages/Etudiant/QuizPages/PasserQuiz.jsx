@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePage, router } from '@inertiajs/react';
 import Timer from '@/Components/Timer';
 

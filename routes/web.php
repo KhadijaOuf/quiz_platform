@@ -26,18 +26,6 @@ use App\Models\Etudiant;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-/*
-    if (Auth::guard('formateur')->check()) {
-        return redirect()->route('formateur.dashboard');
-    }
-    if (Auth::guard('etudiant')->check()) {
-        return redirect()->route('etudiant.dashboard');
-    }
-    if (Auth::guard('admin')->check()) {
-        return redirect('/admin');
-    }
-   */ 
-
     // Sinon, on affiche la page publique d'accueil
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
         $guard = match ($expectedRole) {
             'formateur' => 'formateur',
             'etudiant' => 'etudiant',
-            default => 'web',
+            'admin' => 'admin',
         };
 
         // Authentifier avec le bon guard
@@ -57,6 +57,7 @@ class AuthenticatedSessionController extends Controller
         return match ($expectedRole) {
             'formateur' => redirect()->route('formateur.dashboard'),
             'etudiant' => redirect()->route('etudiant.dashboard'),
+            'admin' => redirect()->route('admin.dashboard'),
             default => redirect('/'),
         };
     }

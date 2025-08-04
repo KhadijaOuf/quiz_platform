@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\CreateAction;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class EtudiantResource extends Resource
 {
@@ -82,7 +83,7 @@ class EtudiantResource extends Resource
                             'password' => bcrypt($data['password']),
                         ]);
                         // assigner le role de formateur
-                        $user->assignRole('etudiant');
+                        $user->assignRole(Role::findByName('etudiant', 'etudiant'));
                         // Injecter user_id dans les données Formateur
                         $data['user_id'] = $user->id;
                         // supprimer les champs inutile pour la table 'formateur'

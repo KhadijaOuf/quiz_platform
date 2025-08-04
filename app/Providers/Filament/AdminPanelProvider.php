@@ -41,8 +41,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
-                'web',
-            Authenticate::class, // => auth:admin
+                Authenticate::class, // => auth:admin
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
