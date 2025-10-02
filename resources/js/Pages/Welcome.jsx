@@ -36,7 +36,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                         <main className="mt-10 mb-20 px-6 py-16 max-h-screen">
                             <div className="max-w-4xl mx-auto text-center">
-                                <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-800 mb-6 leading-tight">
+                                <h1 className="sm:text-6xl font-extrabold text-gray-800 mb-6 leading-tight">
                                 Bienvenue sur notre <br></br><span className="text-orange-600">plateforme de quiz</span> interactive !
                                 </h1>
                                 <p className="text-lg sm:text-xl text-gray-700 mb-4 leading-relaxed">
