@@ -97,6 +97,6 @@ http://127.0.0.1:8000
 ```
 http://127.0.0.1:8000/admin/login
 ```
-you can change admin credentials in database/seeders/RolesAndAdminSeeder.php
+you can change admin credentials in `database/seeders/RolesAndAdminSeeder.php`
 
 ---
