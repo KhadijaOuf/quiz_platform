@@ -32,8 +32,11 @@ composer install
 
 ### Environment file
 
-edit `.env`:
+```
+cp .env.example .env
+```
 
+Then edit .env:
 * `APP_NAME`
 * `APP_URL`
 * Database credentials
