@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->bigInteger('id', true);
-            $table->bigInteger('user_id')->unique('user_id');
+            $table->id();
+            $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
         });
     }
 

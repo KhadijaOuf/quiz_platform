@@ -41,7 +41,6 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
-                Authenticate::class, // => auth:admin
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -52,24 +51,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class,
-            ])
             ->authGuard('admin');
 
     }
-
-    //  exécuté quand Filament démarre, pour vérifier le rôle.
-    // Seuls les utilisateurs avec le rôle admin accèdent au panel /admin.
-    // Tous les autres (formateur, etudiant) seront bloqués avec une erreur 403 Forbidden.
-    public function boot(): void
-    {
-        Filament::serving(function () {
-            if (!Auth::guard('admin')->user()?->hasRole('admin')) {
-                abort(403);
-            }
-        });
-    }
-
 
 }

@@ -15,7 +15,6 @@ Route::middleware(['auth:admin'])->group(function () {
     })->name('admin.dashboard');
 });
 
-// Dans routes/web.php
 Route::get('/login', function () {
     return redirect()->route('welcome');
 })->name('login');

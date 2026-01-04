@@ -17,16 +17,13 @@ class AdminAuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        // Force l'utilisation du guard admin
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-
-            // Redirection manuelle vers le bon dashboard admin
-            return redirect()->intended(route('filament.admin.pages.dashboard'));
+            return redirect()->intended('/admin'); // dashboard Filament
         }
 
         return back()->withErrors([
-            'email' => 'Identifiants invalides ou accès non autorisé.',
+            'email' => 'Identifiants invalides.',
         ]);
     }
 
@@ -35,7 +32,7 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('admin.login');
     }
 }
+
