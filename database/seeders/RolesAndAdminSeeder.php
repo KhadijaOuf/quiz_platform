@@ -22,10 +22,10 @@ class RolesAndAdminSeeder extends Seeder
 
         // Crée un utilisateur admin si l'email n'existe pas déjà
         $admin = User::firstOrCreate([
-            'email' => 'khadija.oufquir22@gmail.com',
+            'email' => 'admin@gmail.com',
         ], [
-            'name' => 'epgAdmin',
-            'password' => Hash::make('epgadmin2025'), // Mot de passe sécurisé
+            'name' => 'Admin',
+            'password' => Hash::make('admin2025'), // Mot de passe sécurisé
         ]);
 
         // Donne le rôle "admin" à ce compte
