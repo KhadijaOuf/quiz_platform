@@ -88,9 +88,15 @@ npm run dev
 ```bash
 php artisan serve
 ```
-
 Visit:
 ```
 http://127.0.0.1:8000
 ```
+
+### Admin route
+```
+http://127.0.0.1:8000/admin/login
+```
+you can change admin credentials in database/seeders/RolesAndAdminSeeder.php
+
 ---
